@@ -1,4 +1,4 @@
-name: Build Modules
+name: Build Revanced
 on: [workflow_call, workflow_dispatch]
 
 jobs:
@@ -45,7 +45,7 @@ jobs:
           yt_op=$(find . -maxdepth 1 -name "youtube-revanced-magisk-*.zip" -printf '%P')
           echo ::set-output name=YT_OUTPUT::$yt_op
           if [ -z "$yt_op" ]; then
-            echo ::set-output name=RELEASE_NAME::"revanced"
+            echo ::set-output name=RELEASE_NAME::"Revanced APKs"
           else
             echo ::set-output name=RELEASE_NAME::$yt_op
           fi
