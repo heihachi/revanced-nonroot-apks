@@ -1,4 +1,4 @@
-name: Build Revanced
+name: Build Revanced APKS/Modules
 on: [workflow_call, workflow_dispatch]
 
 jobs:
@@ -20,8 +20,6 @@ jobs:
         id: next_ver_code
         run: |
           TAG=$(git tag --sort=creatordate | tail -1)
-          # fetch it from github
-          # TAG=$(wget https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest -O- | tr -d ' ' | sed -n 's/.*"tag_name":"\(.*\)".*/\1/p')
           if [ -z "$TAG" ]; then TAG=0; fi
           echo ::set-output name=NEXT_VER_CODE::$((TAG + 1))
 
@@ -47,7 +45,7 @@ jobs:
           if [ -z "$yt_op" ]; then
             echo ::set-output name=RELEASE_NAME::"Revanced APKs"
           else
-            echo ::set-output name=RELEASE_NAME::$yt_op
+            echo ::set-output name=RELEASE_NAME::"Revanced Modules"
           fi
           echo ::set-output name=TT_OUTPUT::$(find . -maxdepth 1 -name "tiktok-revanced-magisk-*.zip" -printf '%P')
           echo ::set-output name=RDT_OUTPUT::$(find . -maxdepth 1 -name "reddit-revanced-magisk-*.zip" -printf '%P')
