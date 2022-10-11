@@ -1,4 +1,4 @@
-name: Build Revanced APKS/Modules
+name: Build Revanced APKs/Modules
 on: [workflow_call, workflow_dispatch]
 
 jobs:
