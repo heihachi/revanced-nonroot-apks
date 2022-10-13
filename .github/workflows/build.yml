@@ -39,7 +39,7 @@ jobs:
           BUILD_LOG="${BUILD_LOG//$'\r'/'%0D'}"
 
           echo ::set-output name=BUILD_LOG::$BUILD_LOG
-          rm -rf revanced-cache temp # left over junk.
+          rm -rf temp # left over junk.
           cd build
           yt_op=$(find . -maxdepth 1 -name "youtube-revanced-magisk-*.zip" -printf '%P')
           echo ::set-output name=YT_OUTPUT::$yt_op
