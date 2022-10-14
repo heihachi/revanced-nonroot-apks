@@ -11,7 +11,7 @@ ARM64_V8A="arm64-v8a"
 ARM_V7A="arm-v7a"
 GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-$"E85Addict/revanced-magisk-module"}
 NEXT_VER_CODE=${NEXT_VER_CODE:-$(date +'%Y%m%d')}
-WGET_HEADER="User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0"
+WGET_HEADER="User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:105.0) Gecko/20100101 Firefox/105.0"
 
 SERVICE_SH=$(cat $MODULE_SCRIPTS_DIR/service.sh)
 POSTFSDATA_SH=$(cat $MODULE_SCRIPTS_DIR/post-fs-data.sh)
