@@ -32,13 +32,13 @@ jobs:
 
           if ! git checkout update; then
             echo "first time building!"
-            "SHOULD_BUILD=1" >> $GITHUB_OUTPUT
+            echo "SHOULD_BUILD=1" >> $GITHUB_OUTPUT
           elif is_patches_latest; then
             echo "build!"
-            "SHOULD_BUILD=1" >> $GITHUB_OUTPUT
+            echo "SHOULD_BUILD=1" >> $GITHUB_OUTPUT
           else
             echo "dont build!"
-            "SHOULD_BUILD=0" >> $GITHUB_OUTPUT
+            echo "SHOULD_BUILD=0" >> $GITHUB_OUTPUT
           fi
 
     outputs:
