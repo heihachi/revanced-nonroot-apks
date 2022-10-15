@@ -13,7 +13,7 @@ if [ -z ${1+x} ]; then
 	print_usage
 	exit 0
 elif [ "$1" = "clean" ]; then
-	rm -rf revanced-cache build.log build
+	rm -rf revanced-cache build.md build
 	reset_template
 	exit 0
 elif [ "$1" = "reset-template" ]; then
@@ -26,8 +26,7 @@ else
 	exit 1
 fi
 
-: >build.log
-log "$(date +'%Y-%m-%d')\n"
+: >build.md
 mkdir -p "$BUILD_DIR" "$TEMP_DIR"
 
 if [ "$UPDATE_PREBUILTS" = true ]; then get_prebuilts; else set_prebuilts; fi
@@ -66,6 +65,7 @@ if [ "$BUILD_MINDETACH_MODULE" = true ]; then
 	zip -r ../../build/mindetach.zip .
 	cd ../../
 fi
+log "\n[revanced-magisk-module-repo](https://github.com/E85Addict/revanced-magisk-module)"
 
 reset_template
 echo "Done"
