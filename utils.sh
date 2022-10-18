@@ -18,21 +18,26 @@ POSTFSDATA_SH=$(cat $MODULE_SCRIPTS_DIR/post-fs-data.sh)
 CUSTOMIZE_SH=$(cat $MODULE_SCRIPTS_DIR/customize.sh)
 UNINSTALL_SH=$(cat $MODULE_SCRIPTS_DIR/uninstall.sh)
 
+json_get() {
+	local key=$1 grep_for=${2:-}
+	grep "$key" | if [ "$grep_for" ]; then grep "$grep_for"; else cat; fi | sed -E 's/^[^:]*:\s?"(.*)",?/\1/'
+}
+
 get_prebuilts() {
 	echo "Getting prebuilts"
-	RV_CLI_URL=$(req https://api.github.com/repos/E85Addict/revanced-cli/releases/latest - | jq -r '.assets[0].browser_download_url')
+	RV_CLI_URL=$(req https://api.github.com/repos/E85Addict/revanced-cli/releases/latest - | json_get 'browser_download_url')
 	RV_CLI_JAR="${TEMP_DIR}/${RV_CLI_URL##*/}"
 	log "CLI: ${RV_CLI_URL##*/}"
 
-	RV_INTEGRATIONS_URL=$(req https://api.github.com/repos/revanced/revanced-integrations/releases/latest - | jq -r '.assets[0].browser_download_url')
+	RV_INTEGRATIONS_URL=$(req https://api.github.com/repos/revanced/revanced-integrations/releases/latest - | json_get 'browser_download_url')
 	RV_INTEGRATIONS_APK=${RV_INTEGRATIONS_URL##*/}
 	RV_INTEGRATIONS_APK="${RV_INTEGRATIONS_APK%.apk}-$(cut -d/ -f8 <<<"$RV_INTEGRATIONS_URL").apk"
 	log "Integrations: $RV_INTEGRATIONS_APK"
 	RV_INTEGRATIONS_APK="${TEMP_DIR}/${RV_INTEGRATIONS_APK}"
 
 	RV_PATCHES=$(req https://api.github.com/repos/E85Addict/revanced-patches/releases/latest -)
-	RV_PATCHES_CHANGELOG=$(echo "$RV_PATCHES" | jq -r '.body' | sed '/^$/N;/^\n$/D')
-	RV_PATCHES_URL=$(echo "$RV_PATCHES" | jq -r '.assets[].browser_download_url | select(endswith("jar"))')
+	RV_PATCHES_CHANGELOG=$(echo "$RV_PATCHES" | json_get 'body' | sed 's/\(\\n\)\+/\\n/g')
+	RV_PATCHES_URL=$(echo "$RV_PATCHES" | json_get 'browser_download_url' 'jar')
 	RV_PATCHES_JAR="${TEMP_DIR}/${RV_PATCHES_URL##*/}"
 	log "Patches: ${RV_PATCHES_URL##*/}"
 	log "${RV_PATCHES_CHANGELOG//# [/### [}\n"
@@ -241,6 +246,11 @@ build_rv() {
 
 	patch_apk "$stock_apk" "$patched_apk" "${args[patcher_args]}"
 
+	if [ ! -f "$patched_apk" ]; then
+		echo "BUILD FAIL"
+		return
+	fi
+
 	if [ $is_root = false ]; then
 		echo "Built ${args[app_name]} (${args[arch]}) (non-root)"
 		return
@@ -346,6 +356,27 @@ build_reddit() {
 	fi
 
 	build_rv reddit_args
+}
+
+build_warn_wetter() {
+	declare -A warn_wetter_args
+	warn_wetter_args[app_name]="WarnWetter"
+	warn_wetter_args[is_module]="$WARNWETTER_MODULE"
+	warn_wetter_args[custom_module]="$WARNWETTER_MODULE"
+	warn_wetter_args[rip_all_libs]="$WARNWETTER_MODULE"
+	warn_wetter_args[patcher_args]="${WARNWETTER_PATCHER_ARGS}"
+	warn_wetter_args[arch]="all"
+	warn_wetter_args[pkg_name]="de.dwd.warnapp"
+	warn_wetter_args[apkmirror_dlurl]="deutscher-wetterdienst/warnwetter/warnwetter"
+	warn_wetter_args[dl_provider]="apkmirror"
+	#shellcheck disable=SC2034
+	warn_wetter_args[regexp]="APK</span>[^@]*@\([^#]*\)"
+	if [ "$WARNWETTER_MODULE" = true ]; then
+		reddit_args[module_prop_name]="wwrv-magisk"
+		reddit_args[module_update_json]="ww-update.json"
+	fi
+
+	build_rv warn_wetter_args
 }
 
 build_tiktok() {

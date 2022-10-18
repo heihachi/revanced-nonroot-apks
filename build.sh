@@ -35,6 +35,7 @@ get_cmpr
 
 if [ "$BUILD_TWITTER" = true ]; then build_twitter; fi
 if [ "$BUILD_REDDIT" = true ]; then build_reddit; fi
+if [ "$BUILD_WARN_WETTER" = true ]; then build_warn_wetter; fi
 if [ "$BUILD_TIKTOK" = true ]; then build_tiktok; fi
 if [ "$BUILD_SPOTIFY" = true ]; then build_spotify; fi
 if [ "$BUILD_YT" = true ]; then build_yt; fi
@@ -56,6 +57,9 @@ if [ "$BUILD_MINDETACH_MODULE" = true ]; then
 	if [ "$REDDIT_MODULE" = true ]; then
 		echo "com.reddit.frontpage" >>detach.txt
 	fi
+	if [ "$WARNWETTER_MODULE" = true ]; then
+		echo "de.dwd.warnapp" >>detach.txt
+	fi
 	if [ "$TIKTOK_MODULE" = true ]; then
 		echo "com.zhiliaoapp.musically" >>detach.txt
 	fi	
@@ -65,7 +69,7 @@ if [ "$BUILD_MINDETACH_MODULE" = true ]; then
 	zip -r ../../build/mindetach.zip .
 	cd ../../
 fi
-log "\n[revanced-magisk-module-repo](https://github.com/E85Addict/revanced-magisk-module)"
+log "\n[revanced-magisk-module-repo](https://github.com/E85Addict/revanced-magisk-module-repo)"
 
 reset_template
 echo "Done"

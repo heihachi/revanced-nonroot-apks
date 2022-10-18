@@ -5,7 +5,7 @@ jobs:
   run:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/setup-java@v3.5.1
+      - uses: actions/setup-java@v3.6.0
         with:
           distribution: "zulu"
           java-version: "17"
@@ -29,7 +29,7 @@ jobs:
           GITHUB_REPOSITORY: $GITHUB_REPOSITORY
           NEXT_VER_CODE: ${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}
 
-      - name: Echo the output
+      - name: Get output
         id: get_output
         run: |
           BUILD_LOG=$(cat build.md)
@@ -49,6 +49,7 @@ jobs:
           fi
           echo "TT_OUTPUT=$(find . -maxdepth 1 -name "tiktok-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "RDT_OUTPUT=$(find . -maxdepth 1 -name "reddit-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
+          echo "WW_OUTPUT=$(find . -maxdepth 1 -name "warnwetter-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "TW_OUTPUT=$(find . -maxdepth 1 -name "twitter-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "MUSIC_OUTPUT_ARM64=$(find . -maxdepth 1 -name "music-revanced-magisk-*-arm64-v8a.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "MUSIC_OUTPUT_ARM=$(find . -maxdepth 1 -name "music-revanced-magisk-*-arm-v7a.zip" -printf '%P')" >> $GITHUB_OUTPUT
@@ -71,6 +72,7 @@ jobs:
       - name: Update changelog and Magisk update jsons
         id: update_config
         run: |
+          echo "${{ env.BUILD_LOG }}" >build.md
           CHANGELOG_URL="https://raw.githubusercontent.com/$GITHUB_REPOSITORY/update/build.md"
           get_update_json() {
             echo "{
@@ -81,51 +83,58 @@ jobs:
           }"
           }
           if [ -n "${{ steps.get_output.outputs.YT_OUTPUT }}" ]; then
-            YT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*YouTube: \(.*\)/\1/p')
-            YT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}/${{ steps.get_output.outputs.YT_OUTPUT }}"
-            UPDATE_YT_JSON=$(get_update_json "$YT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$YT_DLURL" "$CHANGELOG_URL")
+            YT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*YouTube: \(.*\)/\1/p' | xargs)
+            YT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.YT_OUTPUT }}"
+            UPDATE_YT_JSON=$(get_update_json "$YT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$YT_DLURL" "$CHANGELOG_URL")
             echo "$UPDATE_YT_JSON" >yt-update.json
           fi
 
           if [ -n "${{ steps.get_output.outputs.TT_OUTPUT }}" ]; then
-            TT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*TikTok: \(.*\)/\1/p')
-            TT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}/${{ steps.get_output.outputs.TT_OUTPUT }}"
-            UPDATE_TT_JSON=$(get_update_json "$TT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$TT_DLURL" "$CHANGELOG_URL")
+            TT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*TikTok: \(.*\)/\1/p' | xargs)
+            TT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.TT_OUTPUT }}"
+            UPDATE_TT_JSON=$(get_update_json "$TT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$TT_DLURL" "$CHANGELOG_URL")
             echo "$UPDATE_TT_JSON" >tt-update.json
           fi
 
           if [ -n "${{ steps.get_output.outputs.RDT_OUTPUT }}" ]; then
-            RDT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Reddit: \(.*\)/\1/p')
-            RDT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}/${{ steps.get_output.outputs.RDT_OUTPUT }}"
-            UPDATE_RDT_JSON=$(get_update_json "$RDT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$RDT_DLURL" "$CHANGELOG_URL")
+            RDT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Reddit: \(.*\)/\1/p' | xargs)
+            RDT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.RDT_OUTPUT }}"
+            UPDATE_RDT_JSON=$(get_update_json "$RDT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$RDT_DLURL" "$CHANGELOG_URL")
             echo "$UPDATE_RDT_JSON" >rdt-update.json
           fi
 
+          if [ -n "${{ steps.get_output.outputs.WW_OUTPUT }}" ]; then
+            WW_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*WarnWetter: \(.*\)/\1/p' | xargs)
+            WW_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.WW_OUTPUT }}"
+            UPDATE_WW_JSON=$(get_update_json "$WW_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$WW_DLURL" "$CHANGELOG_URL")
+            echo "$UPDATE_WW_JSON" >ww-update.json
+          fi
+
           if [ -n "${{ steps.get_output.outputs.TW_OUTPUT }}" ]; then
-            TW_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Twitter: \(.*\)/\1/p')
-            TW_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}/${{ steps.get_output.outputs.TW_OUTPUT }}"
-            UPDATE_TW_JSON=$(get_update_json "$TW_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$TW_DLURL" "$CHANGELOG_URL")
+            TW_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Twitter: \(.*\)/\1/p' | xargs)
+            TW_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.TW_OUTPUT }}"
+            UPDATE_TW_JSON=$(get_update_json "$TW_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$TW_DLURL" "$CHANGELOG_URL")
             echo "$UPDATE_TW_JSON" >tw-update.json
           fi
 
           if [ -n "${{ steps.get_output.outputs.MUSIC_OUTPUT_ARM64 }}" ]; then
-            MUSIC_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Music (arm64-v8a): \(.*\)/\1/p')
-            MUSIC_ARM64_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}/${{ steps.get_output.outputs.MUSIC_OUTPUT_ARM64 }}"
+            MUSIC_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Music (arm64-v8a): \(.*\)/\1/p' | xargs)
+            MUSIC_ARM64_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.MUSIC_OUTPUT_ARM64 }}"
             UPDATE_MUSIC_ARM64_JSON=$(get_update_json "$MUSIC_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$MUSIC_ARM64_DLURL" "$CHANGELOG_URL")
             echo "$UPDATE_MUSIC_ARM64_JSON" >music-update-arm64-v8a.json
           fi
 
           if [ -n "${{ steps.get_output.outputs.MUSIC_OUTPUT_ARM }}" ]; then
-            MUSIC_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Music (arm-v7a): \(.*\)/\1/p')
-            MUSIC_ARM_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}/${{ steps.get_output.outputs.MUSIC_OUTPUT_ARM }}"
+            MUSIC_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Music (arm-v7a): \(.*\)/\1/p' | xargs)
+            MUSIC_ARM_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.MUSIC_OUTPUT_ARM }}"
             UPDATE_MUSIC_ARM_JSON=$(get_update_json "$MUSIC_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$MUSIC_ARM_DLURL" "$CHANGELOG_URL")
             echo "$UPDATE_MUSIC_ARM_JSON" >music-update-arm-v7a.json
           fi
 
           if [ -n "${{ steps.get_output.outputs.SP_OUTPUT }}" ]; then
-            SP_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Spotify: \(.*\)/\1/p')
-            SP_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}/${{ steps.get_output.outputs.SP_OUTPUT }}"
-            UPDATE_SP_JSON=$(get_update_json "$SP_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$SP_DLURL" "$CHANGELOG_URL")
+            SP_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Spotify: \(.*\)/\1/p' | xargs)
+            SP_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.SP_OUTPUT }}"
+            UPDATE_SP_JSON=$(get_update_json "$SP_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}" "$SP_DLURL" "$CHANGELOG_URL")
             echo "$UPDATE_SP_JSON" >sp-update.json
           fi
 
