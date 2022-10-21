@@ -102,7 +102,6 @@ dl_apkmirror() {
 	local url=$1 regexp=$2 output=$3
 	resp=$(req "$url" -) || return 1
 	url="https://www.apkmirror.com$(echo "$resp" | tr '\n' ' ' | sed -n "s/href=\"/@/g; s;.*${regexp}.*;\1;p")"
-	echo "$url"
 	url="https://www.apkmirror.com$(req "$url" - | tr '\n' ' ' | sed -n 's;.*href="\(.*key=[^"]*\)">.*;\1;p')"
 	url="https://www.apkmirror.com$(req "$url" - | tr '\n' ' ' | sed -n 's;.*href="\(.*key=[^"]*\)">.*;\1;p')"
 	req "$url" "$output"
@@ -153,7 +152,7 @@ select_ver() {
 
 build_rv() {
 	local -n args=$1
-	local version patcher_args dl_from build_mode_arr dl_url_log
+	local version patcher_args dl_from build_mode_arr
 	local mode_arg=${args[mode]%/*} version_mode=${args[mode]#*/}
 	args[arch]=${args[arch]:-all}
 	if [ "${args[apkmirror_dlurl]:-}" ] && [ "${args[regexp]:-}" ]; then dl_from=apkmirror; else dl_from=uptodown; fi
@@ -218,9 +217,9 @@ build_rv() {
 		if [ ! -f "$stock_apk" ]; then
 			if [ $dl_from = apkmirror ]; then
 				echo "Downloading from APKMirror"
-				if ! declare -r dl_url_log=$(dl_apkmirror "https://www.apkmirror.com/apk/${args[apkmirror_dlurl]}-${version//./-}-release/" \
+				if ! dl_apkmirror "https://www.apkmirror.com/apk/${args[apkmirror_dlurl]}-${version//./-}-release/" \
 					"${args[regexp]}" \
-					"$stock_apk"); then
+					"$stock_apk"; then
 					echo "ERROR: Could not find version '${version}' for ${args[app_name]}"
 					return 1
 				fi
@@ -236,19 +235,9 @@ build_rv() {
 		fi
 
 		if [ "${args[arch]}" = "all" ]; then
-			if [ $dl_from = apkmirror ]; then
-				log "${args[app_name]}: ${version} downloaded from: [APKMirror - ${args[app_name]}]($dl_url_log)"
-			elif [ $dl_from = uptodown ]; then
-				dl_url_log="https://${args[app_name],,}.en.uptodown.com/android/download"
-				log "${args[app_name]}: ${version} downloaded from: [UpToDown - ${args[app_name]}]($dl_url_log)"
-			fi
+			log "${args[app_name]}: ${version}"
 		else
-			if [ $dl_from = apkmirror ]; then
-				log "${args[app_name]} (${args[arch]}): ${version} downloaded from: [APKMirror - ${args[app_name]} (${args[arch]})]($dl_url_log)"
-			elif [ $dl_from = uptodown ]; then
-				dl_url_log="https://${args[app_name],,}.en.uptodown.com/android/download"
-				log "${args[app_name]} (${args[arch]}): ${version} downloaded from: [UpToDown - ${args[app_name]} (${args[arch]})]($dl_url_log)"
-			fi
+			log "${args[app_name]} (${args[arch]}): ${version}"
 		fi
 
 		if [ ! -f "$patched_apk" ] || [ "${args[microg_patch]:-}" ]; then
