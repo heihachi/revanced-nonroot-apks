@@ -9,7 +9,7 @@ BUILD_DIR="build"
 
 ARM64_V8A="arm64-v8a"
 ARM_V7A="arm-v7a"
-GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-$"E85Addict/revanced-magisk-module"}
+GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-$"E85Addict/revanced-nonroot-apks"}
 NEXT_VER_CODE=${NEXT_VER_CODE:-$(date +'%Y%m%d')}
 WGET_HEADER="User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:106.0) Gecko/20100101 Firefox/106.0"
 
