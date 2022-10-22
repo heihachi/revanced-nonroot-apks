@@ -102,6 +102,7 @@ dl_apkmirror() {
 	local url=$1 regexp=$2 output=$3
 	resp=$(req "$url" -) || return 1
 	url="https://www.apkmirror.com$(echo "$resp" | tr '\n' ' ' | sed -n "s/href=\"/@/g; s;.*${regexp}.*;\1;p")"
+	echo $url
 	url="https://www.apkmirror.com$(req "$url" - | tr '\n' ' ' | sed -n 's;.*href="\(.*key=[^"]*\)">.*;\1;p')"
 	url="https://www.apkmirror.com$(req "$url" - | tr '\n' ' ' | sed -n 's;.*href="\(.*key=[^"]*\)">.*;\1;p')"
 	req "$url" "$output"
@@ -122,6 +123,7 @@ get_uptodown_ver() {
 dl_uptodown() {
 	local version_json=$1 output=$2 version=$3
 	version_url=$(curl -s "$version_json" | jq ".data[] | select(.version | contains(\"$version\")) | .versionURL")
+	echo $version_url | tr -d '"'
 	url=$(curl -s "${version_url:1:-1}" | grep -oE "https:\/\/dw\.uptodown\.com.+\/")
 	req "$url" "$output"
 }
@@ -158,10 +160,10 @@ select_ver() {
 
 build_rv() {
 	local -n args=$1
-	local version patcher_args dl_from build_mode_arr
+	local version patcher_args dl_from build_mode_arr dl_url
 	local mode_arg=${args[mode]%/*} version_mode=${args[mode]#*/}
 	args[arch]=${args[arch]:-all}
-	if [ "${args[apkmirror_dlurl]:-}" ] && [ "${args[regexp]:-}" ]; then dl_from=apkmirror; else dl_from=uptodown; fi
+	if [ "${args[apkmirror_dlurl]:-}" ] && [ "${args[regexp]:-}" ]; then dl_from=APKMirror; else dl_from=UpToDown; fi
 	reset_template
 
 	if [ "$mode_arg" = none ]; then
@@ -188,14 +190,14 @@ build_rv() {
 				abort "UNREACHABLE $LINENO"
 			fi
 		fi
-		if [ "$version_mode" = auto ] && [ $dl_from = apkmirror ]; then
+		if [ "$version_mode" = auto ] && [ $dl_from = APKMirror ]; then
 			version=$(select_ver "${args[pkg_name]}" "${args[apkmirror_dlurl]##*/}" false)
-		elif [ "$version_mode" = auto ] && [ $dl_from = uptodown ]; then
+		elif [ "$version_mode" = auto ] && [ $dl_from = UpToDown ]; then
 			version=$(get_uptodown_ver "${args[app_name],,}" "${args[pkg_name]}" false)
 		elif [ "$version_mode" = latest ]; then
-			if [ $dl_from = apkmirror ]; then
+			if [ $dl_from = APKMirror ]; then
 				version=$(select_ver "${args[pkg_name]}" "${args[apkmirror_dlurl]##*/}" true)
-			elif [ $dl_from = uptodown ]; then
+			elif [ $dl_from = UpToDown ]; then
 				version=$(get_uptodown_ver "${args[app_name],,}" "${args[pkg_name]}" true)
 			fi
 			patcher_args="$patcher_args --experimental"
@@ -223,17 +225,17 @@ build_rv() {
 			local patched_apk="${TEMP_DIR}/${args[app_name],,}-revanced-v${version}-${args[arch]}.apk"
 		fi
 		if [ ! -f "$stock_apk" ]; then
-			if [ $dl_from = apkmirror ]; then
+			if [ $dl_from = APKMirror ]; then
 				echo "Downloading from APKMirror"
-				if ! dl_apkmirror "https://www.apkmirror.com/apk/${args[apkmirror_dlurl]}-${version//./-}-release/" \
+				if ! declare -r dl_url=$(dl_apkmirror "https://www.apkmirror.com/apk/${args[apkmirror_dlurl]}-${version//./-}-release/" \
 					"${args[regexp]}" \
-					"$stock_apk"; then
+					"$stock_apk"); then
 					echo "ERROR: Could not find version '${version}' for ${args[app_name]}"
 					return 1
 				fi
-			elif [ $dl_from = uptodown ]; then
+			elif [ $dl_from = UpToDown ]; then
 				echo "Downloading from UpToDown"
-				if ! dl_uptodown "${args[uptodown_dlurl]}" "$stock_apk" "${version}"; then
+				if ! declare -r dl_url=$(dl_uptodown "${args[uptodown_dlurl]}" "$stock_apk" "${version}"); then
 					echo "ERROR: Could not download ${args[app_name]}"
 					return 1
 				fi
@@ -244,8 +246,10 @@ build_rv() {
 
 		if [ "${args[arch]}" = "all" ]; then
 			log "${args[app_name]}: ${version}"
+			log "downloaded from: [$dl_from - ${args[app_name]}]($dl_url)"
 		else
 			log "${args[app_name]} (${args[arch]}): ${version}"
+			log "downloaded from: [$dl_from - ${args[app_name]} (${args[arch]})]($dl_url)"
 		fi
 
 		if [ ! -f "$patched_apk" ] || [ "${args[microg_patch]:-}" ]; then
