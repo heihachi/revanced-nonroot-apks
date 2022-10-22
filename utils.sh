@@ -244,12 +244,16 @@ build_rv() {
 			fi
 		fi
 
-		if [ "${args[arch]}" = "all" ]; then
-			log "${args[app_name]}: ${version}"
-			log "downloaded from: [$dl_from - ${args[app_name]}]($dl_url)"
+		if ! grep -q -e "${args[app_name]}: ${version}" -e "${args[app_name]} (${args[arch]}): ${version}" build.md; then
+			if [ "${args[arch]}" = "all" ]; then
+				log "${args[app_name]}: ${version}"
+				log "downloaded from: [$dl_from - ${args[app_name]}]($dl_url)"
+			else
+				log "${args[app_name]} (${args[arch]}): ${version}"
+				log "downloaded from: [$dl_from - ${args[app_name]} (${args[arch]})]($dl_url)"
+			fi
 		else
-			log "${args[app_name]} (${args[arch]}): ${version}"
-			log "downloaded from: [$dl_from - ${args[app_name]} (${args[arch]})]($dl_url)"
+			echo "Duplicate Entry found in build.md"
 		fi
 
 		if [ ! -f "$patched_apk" ] || [ "${args[microg_patch]:-}" ]; then
