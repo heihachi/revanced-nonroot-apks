@@ -244,21 +244,15 @@ build_rv() {
 			fi
 		fi
 
-		if ! grep -q -e "${args[app_name]}: ${version}" -e "${args[app_name]} (${args[arch]}): ${version}" build.md; then
-			if [ "${args[arch]}" = "all" ]; then
-				log "${args[app_name]}: ${version}"
-				log "downloaded from: [$dl_from - ${args[app_name]}]($dl_url)"
-			else
-				log "${args[app_name]} (${args[arch]}): ${version}"
-				log "downloaded from: [$dl_from - ${args[app_name]} (${args[arch]})]($dl_url)"
-			fi
+		if [ "${args[arch]}" = "all" ]; then
+			! grep -q "${args[app_name]}: ${version}" build.md && log "${args[app_name]}: ${version}"
+			! grep -q "${args[app_name]}: ${version}" build.md && log "downloaded from: [$dl_from - ${args[app_name]}]($dl_url)"
 		else
-			echo "Duplicate Entry found in build.md"
+			! grep -q "${args[app_name]} (${args[arch]})" build.md && log "${args[app_name]} (${args[arch]}): ${version}"
+			! grep -q "${args[app_name]} (${args[arch]})" build.md && log "downloaded from: [$dl_from - ${args[app_name]} (${args[arch]})]($dl_url)"
 		fi
 
-		if [ ! -f "$patched_apk" ] || [ "${args[microg_patch]:-}" ]; then
-			patch_apk "$stock_apk" "$patched_apk" "$patcher_args"
-		fi
+		[ ! -f "$patched_apk" ] && patch_apk "$stock_apk" "$patched_apk" "$patcher_args"
 		if [ ! -f "$patched_apk" ]; then
 			echo "BUILD FAIL"
 			return
@@ -358,9 +352,9 @@ build_reddit() {
 	reddit_args[pkg_name]="com.reddit.frontpage"
 	reddit_args[apkmirror_dlurl]="redditinc/reddit/reddit"
 	reddit_args[regexp]='APK</span>[^@]*@\([^#]*\)'
-	reddit_args[module_prop_name]="rditrv-magisk"
+	reddit_args[module_prop_name]="rdtrv-magisk"
 	#shellcheck disable=SC2034
-	reddit_args[module_update_json]="rdit-update.json"
+	reddit_args[module_update_json]="rdt-update.json"
 
 	build_rv reddit_args
 }
@@ -423,7 +417,5 @@ versionCode=${NEXT_VER_CODE}
 author=E85 Addict
 description=${4}" >"${MODULE_TEMPLATE_DIR}/module.prop"
 
-	if [ "$ENABLE_MAGISK_UPDATE" = true ]; then
-		echo "updateJson=${5}" >>"${MODULE_TEMPLATE_DIR}/module.prop"
-	fi
+	[ "$ENABLE_MAGISK_UPDATE" = true ] && echo "updateJson=${5}" >>"${MODULE_TEMPLATE_DIR}/module.prop"
 }

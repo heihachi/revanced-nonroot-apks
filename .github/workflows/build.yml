@@ -49,7 +49,7 @@ jobs:
           echo "MUSIC_OUTPUT_ARM64=$(find . -maxdepth 1 -name "music-revanced-magisk-*-arm64-v8a.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "MUSIC_OUTPUT_ARM=$(find . -maxdepth 1 -name "music-revanced-magisk-*-arm-v7a.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "TW_OUTPUT=$(find . -maxdepth 1 -name "twitter-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
-          echo "RDIT_OUTPUT=$(find . -maxdepth 1 -name "reddit-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
+          echo "RDT_OUTPUT=$(find . -maxdepth 1 -name "reddit-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "TT_OUTPUT=$(find . -maxdepth 1 -name "tiktok-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "SP_OUTPUT=$(find . -maxdepth 1 -name "spotify-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
           echo "WW_OUTPUT=$(find . -maxdepth 1 -name "warnwetter-revanced-magisk-*.zip" -printf '%P')" >> $GITHUB_OUTPUT
@@ -109,11 +109,11 @@ jobs:
             echo "$UPDATE_TW_JSON" >tw-update.json
           fi
 
-          if [ -n "${{ steps.get_output.outputs.RDIT_OUTPUT }}" ]; then
-            RDIT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Reddit: \(.*\)/\1/p' | xargs)
-            RDIT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.RDIT_OUTPUT }}"
-            UPDATE_RDIT_JSON=$(get_update_json "$RDIT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$RDIT_DLURL" "$CHANGELOG_URL")
-            echo "$UPDATE_RDIT_JSON" >rdit-update.json
+          if [ -n "${{ steps.get_output.outputs.RDT_OUTPUT }}" ]; then
+            RDT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*Reddit: \(.*\)/\1/p' | xargs)
+            RDT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.RDT_OUTPUT }}"
+            UPDATE_RDT_JSON=$(get_update_json "$RDT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$RDT_DLURL" "$CHANGELOG_URL")
+            echo "$UPDATE_RDT_JSON" >rdt-update.json
           fi
 
           if [ -n "${{ steps.get_output.outputs.TT_OUTPUT }}" ]; then
