@@ -120,7 +120,7 @@ jobs:
             TT_VER=$(echo "${{ env.BUILD_LOG }}" | sed -n 's/.*TikTok: \(.*\)/\1/p' | xargs)
             TT_DLURL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/${{ steps.next_ver_code.outputs.NEXT_VER_CODE }}/${{ steps.get_output.outputs.TT_OUTPUT }}"
             UPDATE_TT_JSON=$(get_update_json "$TT_VER" "${{ steps.next_ver_code.outputs.NEXT_VER_CODE}}" "$TT_DLURL" "$CHANGELOG_URL")
-            echo "$UPDATE_TT_JSON" tt-update.json
+            echo "$UPDATE_TT_JSON" >tt-update.json
           fi
 
           if [ -n "${{ steps.get_output.outputs.SP_OUTPUT }}" ]; then
