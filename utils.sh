@@ -175,7 +175,9 @@ build_rv() {
 				abort "UNREACHABLE $LINENO"
 			fi
 		fi
-		local apkmirror_category=${args[apkmirror_dlurl]##*/}
+		if [ $dl_from = APKMirror ]; then
+			local apkmirror_category=${args[apkmirror_dlurl]##*/}
+		fi
 		if [ "$version_mode" = auto ] && [ $dl_from = APKMirror ]; then
 			version=$(get_patch_last_supported_ver "${args[pkg_name]}")
 			if [ -z "$version" ]; then
