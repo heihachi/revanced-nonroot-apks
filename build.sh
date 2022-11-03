@@ -50,13 +50,13 @@ if [ "$BUILD_MINDETACH_MODULE" = true ]; then
 	echo "Building mindetach module"
 	cd mindetach-magisk/mindetach/
 	: >detach.txt
-	if [ "${YOUTUBE_MODE%/*}" != apk ]; then echo "com.google.android.youtube" >>detach.txt; fi
-	if [ "${TWITTER_MODE%/*}" != apk ]; then echo "com.twitter.android" >>detach.txt; fi
-	if [ "${REDDIT_MODE%/*}" != apk ]; then echo "com.reddit.frontpage" >>detach.txt; fi
-	if [ "${TIKTOK_MODE%/*}" != apk ]; then echo "com.zhiliaoapp.musically" >>detach.txt; fi
-	if [ "${SPOTIFY_MODE%/*}" != apk ]; then echo "com.spotify.music" >>detach.txt; fi
-	if [ "${WARN_WETTER_MODE%/*}" != apk ]; then echo "de.dwd.warnapp" >>detach.txt; fi
-	if [ "${MUSIC_ARM64_V8A_MODE%/*}" != apk ] || [ "${MUSIC_ARM_V7A_MODE%/*}" != apk ]; then
+	if [ "${YOUTUBE_MODE%/*}" = module ] || [ "${YOUTUBE_MODE%/*}" = both ]; then echo "com.google.android.youtube" >>detach.txt; fi
+	if [ "${TWITTER_MODE%/*}" = module ] || [ "${TWITTER_MODE%/*}" = both ]; then echo "com.twitter.android" >>detach.txt; fi
+	if [ "${REDDIT_MODE%/*}" = module ] || [ "${REDDIT_MODE%/*}" = both ]; then echo "com.reddit.frontpage" >>detach.txt; fi
+	if [ "${TIKTOK_MODE%/*}" = module ] || [ "${TIKTOK_MODE%/*}" = both ]; then echo "com.zhiliaoapp.musically" >>detach.txt; fi
+	if [ "${SPOTIFY_MODE%/*}" = module ] || [ "${SPOTIFY_MODE%/*}" = both ]; then echo "com.spotify.music" >>detach.txt; fi
+	if [ "${WARN_WETTER_MODE%/*}" = module ] || [ "${WARN_WETTER_MODE%/*}" = both ]; then echo "de.dwd.warnapp" >>detach.txt; fi
+	if [ "${MUSIC_ARM64_V8A_MODE%/*}" = module ] || [ "${MUSIC_ARM_V7A_MODE%/*}" = module ] || [ "${MUSIC_ARM64_V8A_MODE%/*}" = both ] || [ "${MUSIC_ARM_V7A_MODE%/*}" = both ]; then
 		echo "com.google.android.apps.youtube.music" >>detach.txt
 	fi
 	zip -r ../../build/mindetach-"$(grep version= module.prop | cut -d= -f2)".zip .
