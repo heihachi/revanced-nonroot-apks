@@ -410,5 +410,5 @@ versionCode=${NEXT_VER_CODE}
 author=E85 Addict
 description=${4}" >"${6}/module.prop"
 
-	[ "$ENABLE_MAGISK_UPDATE" = true ] && echo "updateJson=${5}" >>"${6}/module.prop"
+	if [ "$ENABLE_MAGISK_UPDATE" = true ]; then echo "updateJson=${5}" >>"${6}/module.prop"; fi
 }
