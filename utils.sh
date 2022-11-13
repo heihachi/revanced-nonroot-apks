@@ -331,8 +331,6 @@ build_music() {
 
 		build_rv ytmusic_args
 	done
-
-	build_rv ytmusic_args
 }
 
 #shellcheck disable=SC2034
