@@ -42,10 +42,11 @@ build_youtube &
 build_music &
 build_twitter &
 build_reddit &
+build_twitch &
 build_tiktok &
 build_spotify &
+build_ticktick &
 build_warn_wetter &
-build_twitch &
 
 wait
 
@@ -60,6 +61,7 @@ if [ "$BUILD_MINDETACH_MODULE" = true ]; then
 	if [ "${SPOTIFY_MODE%/*}" = module ] || [ "${SPOTIFY_MODE%/*}" = both ]; then echo "com.spotify.music" >>detach.txt; fi
 	if [ "${WARN_WETTER_MODE%/*}" = module ] || [ "${WARN_WETTER_MODE%/*}" = both ]; then echo "de.dwd.warnapp" >>detach.txt; fi
 	if [ "${TWITCH_MODE%/*}" = module ] || [ "${TWITCH_MODE%/*}" = both ]; then echo "tv.twitch.android.app" >>detach.txt; fi
+	if [ "${TICKTICK_MODE%/*}" = module ] || [ "${TICKTICK_MODE%/*}" = both ]; then echo "com.ticktick.task" >>detach.txt; fi
 	if [ "${MUSIC_ARM64_V8A_MODE%/*}" = module ] || [ "${MUSIC_ARM_V7A_MODE%/*}" = module ] || [ "${MUSIC_ARM64_V8A_MODE%/*}" = both ] || [ "${MUSIC_ARM_V7A_MODE%/*}" = both ]; then
 		echo "com.google.android.apps.youtube.music" >>detach.txt
 	fi

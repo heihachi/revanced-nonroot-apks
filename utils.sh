@@ -360,6 +360,18 @@ build_reddit() {
 }
 
 #shellcheck disable=SC2034
+build_twitch() {
+	declare -A twitch_args
+	twitch_args[app_name]="Twitch"
+	twitch_args[mode]="$TWITCH_MODE"
+	twitch_args[pkg_name]="tv.twitch.android.app"
+	twitch_args[apkmirror_dlurl]="twitch-interactive-inc/twitch"
+	twitch_args[regexp]='APK</span>[^@]*@\([^#]*\)'
+
+	build_rv twitch_args
+}
+
+#shellcheck disable=SC2034
 build_tiktok() {
 	declare -A tiktok_args
 	tiktok_args[app_name]="TikTok"
@@ -384,6 +396,18 @@ build_spotify() {
 }
 
 #shellcheck disable=SC2034
+build_ticktick() {
+	declare -A ticktick_args
+	ticktick_args[app_name]="TickTick"
+	ticktick_args[mode]="$TICKTICK_MODE"
+	ticktick_args[pkg_name]="com.ticktick.task"
+	ticktick_args[apkmirror_dlurl]="appest-inc/ticktick-to-do-list-with-reminder-day-planner"
+	ticktick_args[regexp]='APK</span>[^@]*@\([^#]*\)'
+
+	build_rv ticktick_args
+}
+
+#shellcheck disable=SC2034
 build_warn_wetter() {
 	declare -A warn_wetter_args
 	warn_wetter_args[app_name]="WarnWetter"
@@ -393,18 +417,6 @@ build_warn_wetter() {
 	warn_wetter_args[regexp]='APK</span>[^@]*@\([^#]*\)'
 
 	build_rv warn_wetter_args
-}
-
-#shellcheck disable=SC2034
-build_twitch() {
-	declare -A twitch_args
-	twitch_args[app_name]="Twitch"
-	twitch_args[mode]="$TWITCH_MODE"
-	twitch_args[pkg_name]="tv.twitch.android.app"
-	twitch_args[apkmirror_dlurl]="twitch-interactive-inc/twitch"
-	twitch_args[regexp]='APK</span>[^@]*@\([^#]*\)'
-
-	build_rv twitch_args
 }
 
 postfsdata_sh() { echo "${POSTFSDATA_SH//__PKGNAME/$1}" >"${2}/post-fs-data.sh"; }
