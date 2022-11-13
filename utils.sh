@@ -395,6 +395,18 @@ build_warn_wetter() {
 	build_rv warn_wetter_args
 }
 
+#shellcheck disable=SC2034
+build_twitch() {
+	declare -A twitch_args
+	twitch_args[app_name]="Twitch"
+	twitch_args[mode]="$TWITCH_MODE"
+	twitch_args[pkg_name]="tv.twitch.android.app"
+	twitch_args[apkmirror_dlurl]="twitch-interactive-inc/twitch"
+	twitch_args[regexp]='APK</span>[^@]*@\([^#]*\)'
+
+	build_rv twitch_args
+}
+
 postfsdata_sh() { echo "${POSTFSDATA_SH//__PKGNAME/$1}" >"${2}/post-fs-data.sh"; }
 uninstall_sh() { echo "${UNINSTALL_SH//__PKGNAME/$1}" >"${2}/uninstall.sh"; }
 customize_sh() { echo "${CUSTOMIZE_SH//__PKGNAME/$1}" >"${2}/customize.sh"; }
