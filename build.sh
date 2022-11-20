@@ -57,7 +57,7 @@ if [ "$BUILD_MINDETACH_MODULE" = true ]; then
 	if [ "${YOUTUBE_MODE%/*}" = module ] || [ "${YOUTUBE_MODE%/*}" = both ]; then echo "com.google.android.youtube" >>detach.txt; fi
 	if [ "${TWITTER_MODE%/*}" = module ] || [ "${TWITTER_MODE%/*}" = both ]; then echo "com.twitter.android" >>detach.txt; fi
 	if [ "${REDDIT_MODE%/*}" = module ] || [ "${REDDIT_MODE%/*}" = both ]; then echo "com.reddit.frontpage" >>detach.txt; fi
-	if [ "${TIKTOK_MODE%/*}" = module ] || [ "${TIKTOK_MODE%/*}" = both ]; then echo "com.zhiliaoapp.musically" >>detach.txt; fi
+	if [ "${TIKTOK_MODE%/*}" = module ] || [ "${TIKTOK_MODE%/*}" = both ]; then echo $TIKTOK_PACKAGE >>detach.txt; fi
 	if [ "${SPOTIFY_MODE%/*}" = module ] || [ "${SPOTIFY_MODE%/*}" = both ]; then echo "com.spotify.music" >>detach.txt; fi
 	if [ "${WARN_WETTER_MODE%/*}" = module ] || [ "${WARN_WETTER_MODE%/*}" = both ]; then echo "de.dwd.warnapp" >>detach.txt; fi
 	if [ "${TWITCH_MODE%/*}" = module ] || [ "${TWITCH_MODE%/*}" = both ]; then echo "tv.twitch.android.app" >>detach.txt; fi

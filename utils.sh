@@ -375,8 +375,12 @@ build_tiktok() {
 	tiktok_args[app_name]="TikTok"
 	tiktok_args[patcher_args]="-m ${RV_INTEGRATIONS_APK}"
 	tiktok_args[mode]="$TIKTOK_MODE"
-	tiktok_args[pkg_name]="com.zhiliaoapp.musically"
+	tiktok_args[pkg_name]=$TIKTOK_PACKAGE
+	if [ $TIKTOK_PACKAGE = "com.zhiliaoapp.musically" ]; then
 	tiktok_args[apkmirror_dlurl]="tiktok-pte-ltd/tik-tok-including-musical-ly"
+	elif [ $TIKTOK_PACKAGE = "com.ss.android.ugc.trill" ]; then
+	tiktok_args[apkmirror_dlurl]="tiktok-pte-ltd/tik-tok"
+	fi
 	tiktok_args[regexp]='APK</span>[^@]*@\([^#]*\)'
 
 	build_rv tiktok_args
