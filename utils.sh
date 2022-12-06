@@ -9,7 +9,7 @@ BUILD_DIR="build"
 
 GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-$"E85Addict/revanced-nonroot-apks"}
 NEXT_VER_CODE=${NEXT_VER_CODE:-$(date +'%Y%m%d')}
-WGET_HEADER="User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:106.0) Gecko/20100101 Firefox/106.0"
+WGET_HEADER="User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0"
 
 SERVICE_SH=$(cat $MODULE_SCRIPTS_DIR/service.sh)
 POSTFSDATA_SH=$(cat $MODULE_SCRIPTS_DIR/post-fs-data.sh)
@@ -420,6 +420,30 @@ build_warn_wetter() {
 	warn_wetter_args[regexp]='APK</span>[^@]*@\([^#]*\)'
 
 	build_rv warn_wetter_args
+}
+
+#shellcheck disable=SC2034
+build_backdrops() {
+	declare -A backdrops_args
+	backdrops_args[app_name]="Backdrops"
+	backdrops_args[mode]="$BACKDROPS_MODE"
+	backdrops_args[pkg_name]="com.backdrops.wallpapers"
+	backdrops_args[apkmirror_dlurl]="backdrops/backdrops-wallpapers"
+	backdrops_args[regexp]='APK</span>[^@]*@\([^#]*\)'
+
+	build_rv backdrops_args
+}
+
+#shellcheck disable=SC2034
+build_windy() {
+	declare -A windy_args
+	windy_args[app_name]="Windy"
+	windy_args[mode]="$WINDY_MODE"
+	windy_args[pkg_name]="co.windyapp.android"
+	windy_args[apkmirror_dlurl]="windy-weather-world-inc/windy-wind-weather-forecast"
+	windy_args[regexp]='APK</span>[^@]*@\([^#]*\)'
+
+	build_rv windy_args
 }
 
 postfsdata_sh() { echo "${POSTFSDATA_SH//__PKGNAME/$1}" >"${2}/post-fs-data.sh"; }
