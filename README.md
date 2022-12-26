@@ -1,10 +1,10 @@
-#### ⚠️ Do not download modules from 3rd party sources like random websites you found on google. Only use this repository. I am not responsible for anything they may contain.
+#### ⚠️ Do not download modules from 3rd party sources like random websites you found on Google. Only use this repository. I am not responsible for anything they may contain.
 
 # ReVanced Magisk Module
 [![Build Modules](https://github.com/E85Addict/revanced-nonroot-apks/actions/workflows/build.yml/badge.svg)](https://github.com/E85Addict/revanced-nonroot-apks/actions/workflows/build.yml)
 [![CI](https://github.com/E85Addict/revanced-nonroot-apks/actions/workflows/ci.yml/badge.svg?event=schedule)](https://github.com/E85Addict/revanced-nonroot-apks/actions/workflows/ci.yml)
 
-get the [latest CI release](https://github.com/E85Addict/revanced-nonroot-apks/releases).
+Get the [latest CI release](https://github.com/E85Addict/revanced-nonroot-apks/releases).
 
 [**mindetach module**](https://github.com/j-hc/mindetach-magisk) in the releases section detaches YouTube and YouTube Music from Play Store and blocks it from updating them.
 
@@ -41,5 +41,5 @@ Make sure you have JDK 17 installed. Then run:
 ```console
 $ git clone --recurse-submodules https://github.com/E85Addict/revanced-nonroot-apks
 $ cd revanced-nonroot-apks
-$ ./build.sh build
+$ ./build.sh
 ```
