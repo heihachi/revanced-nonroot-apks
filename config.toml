@@ -2,7 +2,7 @@
 
 [main-config]
 compression-level = 9         # compression level for module zips. between 1 and 9
-enable-magisk-update = true   # set this to false if you do not want to receive updates from magisk app
+enable-magisk-update = false  # set this to false if you do not want to receive updates from magisk app
 parallel-jobs = 3             # max number of concurrent building jobs
 update-prebuilts = true       # dont touch this
 build-mindetach-module = true
@@ -53,13 +53,13 @@ version = "latest"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/twitter-inc/twitter/"
 
 [Reddit]
-enabled = true
+enabled = false
 build-mode = "both"
 version = "latest"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/redditinc/reddit/"
 
 [Twitch]
-enabled = true
+enabled = false
 build-mode = "both"
 version = "latest"
 apkmirror-dlurl = "https://www.apkmirror.com/apk/twitch-interactive-inc/twitch/"
